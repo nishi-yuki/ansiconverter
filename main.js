@@ -10,6 +10,7 @@ var code_box = document.getElementById("code");
 input.addEventListener("change", function (event) {
     var file = event.target.files;
     var reader = new FileReader();
+    var bigImg = document.getElementById("pixeldisplay");
 
     reader.readAsDataURL(file[0]);
 
@@ -17,16 +18,19 @@ input.addEventListener("change", function (event) {
         var dataUrl = reader.result;
         var img = new Image();
         img.src = dataUrl;
+        bigImg.src = dataUrl;
 
         img.onload = function () {
             var canvas = document.getElementById("canvas");
             var ctx = canvas.getContext("2d");
             var canvas_size = 256;
             var n = canvas_size / img.width;
-            code_box.value = canvas_size + "/" + img.width + "=" + n;
+            console.log(canvas_size + "/" + img.width + "=" + n);
 
-            // var width = Math.ceil(img.width * n);
-            // var height = Math.ceil(img.height * n);
+            var width = Math.ceil(img.width * n);
+            var height = Math.ceil(img.height * n);
+            console.log("width:\t" + width);
+            console.log("height:\t" + height);
 
             canvas.width = img.width;
             canvas.height = img.height;
@@ -37,19 +41,20 @@ input.addEventListener("change", function (event) {
 
             var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
             var ansi_code = cov24bitansicode(data, "  ");
-            code_box.value = ansi_code;
+            console.log("\033[48;5;40m ok \033[0m");
+            code_box.value = 'echo -e "' + ansi_code + '"\n';
         }
     }
 }, false);
 
 var cov24bitansicode = function (data, dotchar) {
-    var ansi_code = 'echo -e "';
+    var ansi_code = "";
     for (var y = 0; y < data.height; y++) {
         for (var x = 0; x < data.width; x++) {
             var idx = (x + y * data.width) * 4;
             var code;
             if (data.data[idx + 3] <= 16) {
-                code = "\\033[0m";
+                code = "\\033[0m" + dotchar;
             } else {
                 code = "\\033[48;2;"
                     + data.data[idx] + ";"    //R
@@ -59,7 +64,10 @@ var cov24bitansicode = function (data, dotchar) {
             }
             ansi_code += code;
         }
-        ansi_code += "\\033[0m\n";
+        ansi_code += "\\033[0m"
+        if (y < data.height - 1) {
+            ansi_code += "\n";
+        }
     }
-    return ansi_code + '"';
+    return ansi_code;
 }
