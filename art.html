@@ -8,13 +8,32 @@
 </head>
 
 <body>
-    <input type="file" id="imgfile">
-    <br />
-    <img class="pixelart" id=pixeldisplay></img>
-    <canvas class="convdata" id="canvas"></canvas>
-    <br />
-    <textarea id="code" readonly></textarea>
-    <script type="text/javascript" src="main.js"></script>
+
+    <div class="main_content">
+        <h1>ANSIアートコンバーター</h1>
+        <div class="description_text">
+            <p>せつめい</p>
+            <ul>
+                <li>画像ファイルからターミナルでドット絵を表示するシェルスクリプトを生成します</li>
+                <li>画像ファイルは1ドット1ピクセルのものを使用してください</li>
+                <li>ターミナルは24bitカラーに対応したものを使用してください</li>
+            </ul>
+        </div>
+        <div class="pic_wrapper">
+            <img class="pixelart" id=pixeldisplay></img>
+        </div>
+        <br />
+        <label class="file_input">
+            画像ファイルを選択
+            <input type="file" id="imgfile" style="display:none">
+        </label>
+        <br />
+        <canvas class="convdata" id="canvas"></canvas>
+        <br />
+        <textarea id="code" readonly>ここにコードが出ます</textarea>
+        <script type="text/javascript" src="main.js"></script>
+    </div>
+
 </body>
 
 </html>
