@@ -53,13 +53,15 @@ h1 {
 .code_div {
     display: table;
     box-sizing: border-box;
+    margin: 0 auto;
 }
 
-.code_div * {
+#code {
     display: table-cell;
 }
 
 .copy_button {
+    display: table-cell;
     padding: 0px 12px;
     color: white;  
     background-color: steelblue;
