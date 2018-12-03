@@ -6,6 +6,7 @@
 
 var input = document.getElementById("imgfile");
 var code_box = document.getElementById("code");
+var copy_button = document.getElementById("copy_button");
 
 input.addEventListener("change", function (event) {
     var file = event.target.files;
@@ -45,6 +46,11 @@ input.addEventListener("change", function (event) {
         }
     }
 }, false);
+
+copy_button.addEventListener("click", function (event) {
+    code_box.select();
+    document.execCommand("Copy");
+}, false)
 
 var cov24bitansicode = function (data, dotchar) {
     var ansi_code = "";
