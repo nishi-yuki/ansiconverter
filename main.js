@@ -41,7 +41,21 @@ input.addEventListener("change", function (event) {
 
 
             var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            var ansi_code = cov24bitansicode(data, "  ");
+
+            var colorModeForm = document.getElementById("color_mode");
+            var colorMode = colorModeForm.cmode.value;
+            console.log(colorMode)
+
+            var ansi_code;
+            switch (colorMode) {
+                case "24bit":
+                    ansi_code = cov24bitansicode(data, "  ");
+                    break;
+                case "8bit":
+                    ansi_code = cov8bitansicode(data, "  ");
+                    break;
+            }
+
             code_box.value = 'echo -e "' + ansi_code + '"\n';
         }
     }
@@ -68,7 +82,55 @@ var cov24bitansicode = function (data, dotchar) {
                     + data.data[idx + 2] + "m"   //B
                     + dotchar;
             }
-            console.log(oldCode === code);
+            // console.log(oldCode === code);
+            if (oldCode === code) {
+                ansi_code += dotchar;
+            } else {
+                ansi_code += code;
+            }
+            oldCode = code;
+        }
+        ansi_code += "\\033[0m"
+        if (y < data.height - 1) {
+            ansi_code += "\\n";
+        }
+    }
+    return ansi_code;
+}
+
+var cov8bitansicode = function (data, dotchar) {
+
+    var c256to6 = function (num) {
+        //console.log(num)
+        br = [48, 115, 155, 195, 235, 255];
+        for (let i = 0; i < br.length; i++) {
+            if (num <= br[i]) {
+                return i;
+            }
+        }
+        console.log("Error: c256to6");
+        return 5;
+    }
+
+    var div = 43;
+    var ansi_code = "";
+    for (var y = 0; y < data.height; y++) {
+        var oldCode = null;
+        for (var x = 0; x < data.width; x++) {
+            var idx = (x + y * data.width) * 4;
+            var code;
+            if (data.data[idx + 3] <= 16) {
+                code = "\\033[0m" + dotchar;
+            } else {
+                var num = c256to6(data.data[idx]) * 36   //R
+                    + c256to6(data.data[idx + 1]) * 6    //G
+                    + c256to6(data.data[idx + 2]) * 1    //B
+                    + 16;
+                code = "\\033[48;5;"
+                    + num + "m"
+                    + dotchar;
+            }
+            //console.log(oldCode === code);
             if (oldCode === code) {
                 ansi_code += dotchar;
             } else {
