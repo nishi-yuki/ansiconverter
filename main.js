@@ -12,7 +12,7 @@ var dotsize_auto = document.getElementById("dotsize_auto");
 var dotsize_user = document.getElementById("dotsize_user");
 
 var auto_dotsize = "";
-var image_data;
+var image_data = null;
 
 input.addEventListener("change", function (event) {
     var file = event.target.files;
@@ -58,6 +58,11 @@ input.addEventListener("change", function (event) {
 }, false);
 
 mainForm.addEventListener("submit", (event) => {
+    if (!image_data) {
+        event.preventDefault();
+        return;
+    };
+
     const dotsize = mainForm.px_size.value;
 
     var colorMode = mainForm.cmode.value;
