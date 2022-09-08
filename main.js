@@ -112,7 +112,7 @@ const syncResizeMode = (event) => {
     }
 };
 
-var guessPixelSize = (data) => {
+const guessPixelSize = (data) => {
     colors = data.data;
     bc = -1;
     pxsize = 1;
@@ -143,7 +143,7 @@ var guessPixelSize = (data) => {
     return gcd_array(Array.from(pxsizes));
 }
 
-var cov24bitansicode = (data, dotchar, dotsize = 1) => {
+const cov24bitansicode = (data, dotchar, dotsize = 1) => {
     const dot_size = Math.max(dotsize, 1);
     const grid_offset = Math.floor(dot_size / 2);
     var ansi_code = "";
@@ -177,9 +177,9 @@ var cov24bitansicode = (data, dotchar, dotsize = 1) => {
     return ansi_code;
 }
 
-var cov8bitansicode = (data, dotchar, dotsize = 1) => {
+const cov8bitansicode = (data, dotchar, dotsize = 1) => {
 
-    var c256to6 = (num) => {
+    const c256to6 = (num) => {
         //console.log(num)
         br = [48, 115, 155, 195, 235, 255];
         for (let i = 0; i < br.length; i++) {
@@ -226,13 +226,13 @@ var cov8bitansicode = (data, dotchar, dotsize = 1) => {
     return ansi_code;
 }
 
-var gcd = (x, y) => {
+const gcd = (x, y) => {
     if (y == 0) {
         return x;
     }
     return gcd(y, x % y);
 }
 
-var gcd_array = (a) => {
+const gcd_array = (a) => {
     return a.reduce((p, c) => gcd(p, c));
 }
