@@ -62,8 +62,7 @@ input.addEventListener("change", function (event) {
 }, false);
 
 copy_button.addEventListener("click", function (event) {
-    code_box.select();
-    document.execCommand("Copy");
+    navigator.clipboard.writeText(code_box.value);
 }, false)
 
 var cov24bitansicode = function (data, dotchar) {
