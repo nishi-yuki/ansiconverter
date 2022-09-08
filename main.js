@@ -57,6 +57,7 @@ input.addEventListener("change", function (event) {
 }, false);
 
 mainForm.addEventListener("submit", (event) => {
+    const dotsize = mainForm.px_size.value;
 
     var colorMode = mainForm.cmode.value;
     console.log(colorMode);
@@ -64,10 +65,10 @@ mainForm.addEventListener("submit", (event) => {
     var ansi_code;
     switch (colorMode) {
         case "24bit":
-            ansi_code = cov24bitansicode(image_data, "  ");
+            ansi_code = cov24bitansicode(image_data, "  ", dotsize);
             break;
         case "8bit":
-            ansi_code = cov8bitansicode(image_data, "  ");
+            ansi_code = cov8bitansicode(image_data, "  ", dotsize);
             break;
     }
 
@@ -123,12 +124,14 @@ var guessPixelSize = (data) => {
     return gcd_array(Array.from(pxsizes));
 }
 
-var cov24bitansicode = function (data, dotchar) {
+var cov24bitansicode = function (data, dotchar, dotsize = 1) {
+    const grid_offset = Math.floor(dotsize / 2);
+    var dotsize = Math.max(dotsize, 1);
     var ansi_code = "";
-    for (var y = 0; y < data.height; y++) {
+    for (var y = 0; y < data.height; y += dotsize) {
         var oldCode = null;
-        for (var x = 0; x < data.width; x++) {
-            var idx = (x + y * data.width) * 4;
+        for (var x = 0; x < data.width; x += dotsize) {
+            var idx = (grid_offset + x + y * data.width) * 4;
             var code;
             if (data.data[idx + 3] <= 16) {
                 code = "\\033[0m" + dotchar;
@@ -155,7 +158,7 @@ var cov24bitansicode = function (data, dotchar) {
     return ansi_code;
 }
 
-var cov8bitansicode = function (data, dotchar) {
+var cov8bitansicode = function (data, dotchar, dotsize = 1) {
 
     var c256to6 = function (num) {
         //console.log(num)
@@ -169,12 +172,13 @@ var cov8bitansicode = function (data, dotchar) {
         return 5;
     }
 
-    var div = 43;
+    const grid_offset = Math.floor(dotsize / 2);
+    var dotsize = Math.max(dotsize, 1);
     var ansi_code = "";
-    for (var y = 0; y < data.height; y++) {
+    for (var y = 0; y < data.height; y += dotsize) {
         var oldCode = null;
-        for (var x = 0; x < data.width; x++) {
-            var idx = (x + y * data.width) * 4;
+        for (var x = 0; x < data.width; x += dotsize) {
+            var idx = (grid_offset + x + y * data.width) * 4;
             var code;
             if (data.data[idx + 3] <= 16) {
                 code = "\\033[0m" + dotchar;
