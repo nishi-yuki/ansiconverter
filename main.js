@@ -65,7 +65,7 @@ copy_button.addEventListener("click", function (event) {
     navigator.clipboard.writeText(code_box.value);
     message = document.getElementById("copy_ok_message");
     message.style.opacity = 1;
-    setTimeout(function() {message.style.opacity=0;}, 800)
+    setTimeout(function () { message.style.opacity = 0; }, 800)
 }, false)
 
 var cov24bitansicode = function (data, dotchar) {
