@@ -19,6 +19,8 @@ input.addEventListener("change", function (event) {
     var reader = new FileReader();
     var bigImg = document.getElementById("pixeldisplay");
 
+    syncResizeMode();
+
     reader.readAsDataURL(file[0]);
 
     reader.onload = function () {
@@ -90,14 +92,25 @@ copy_button.addEventListener("click", function (event) {
     setTimeout(function () { message.style.opacity = 0; }, 800)
 }, false)
 
-dotsize_auto.addEventListener("change", (event) => {
-    mainForm.px_size.readOnly = true;
-    mainForm.px_size.value = auto_dotsize;
-});
+dotsize_auto.addEventListener("change", (event) =>
+    syncResizeMode()
+);
 
-dotsize_user.addEventListener("change", (event) => {
-    mainForm.px_size.readOnly = false;
-});
+dotsize_user.addEventListener("change", (event) =>
+    syncResizeMode()
+);
+
+const syncResizeMode = (event) => {
+    switch (mainForm.resize_mode.value) {
+        case "auto":
+            mainForm.px_size.readOnly = true;
+            mainForm.px_size.value = auto_dotsize;
+            break;
+        case "user":
+            mainForm.px_size.readOnly = false;
+            break;
+    }
+};
 
 var guessPixelSize = (data) => {
     colors = data.data;
