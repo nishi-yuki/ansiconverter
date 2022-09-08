@@ -4,12 +4,12 @@
  */
 
 
-var input = document.getElementById("imgfile");
-var code_box = document.getElementById("code");
-var copy_button = document.getElementById("copy_button");
-var main_form = document.getElementById("main_form");
-var dotsize_auto = document.getElementById("dotsize_auto");
-var dotsize_user = document.getElementById("dotsize_user");
+const input = document.getElementById("imgfile");
+const code_box = document.getElementById("code");
+const copy_button = document.getElementById("copy_button");
+const main_form = document.getElementById("main_form");
+const dotsize_auto = document.getElementById("dotsize_auto");
+const dotsize_user = document.getElementById("dotsize_user");
 
 var auto_dotsize = "";
 var image_data = null;
