@@ -43,30 +43,54 @@ h1 {
     margin: 0;
 }
 
-.file_input {
+.button {
+    display: block;
     color: white;  
     background-color: steelblue;
     padding: 12px 24px;
+    margin: 12px 10%;
     border-radius: 12px;
 }
 
+.info_table {
+    width: 80%;
+    margin: 24px 10%;
+}
+
+.info_table th {
+    width: 40%;
+    text-align: start;
+}
+
+#copy_ok_message {
+    opacity: 0;
+    font-weight: bold;
+    color: rgb(24, 24, 24);
+}
+
 .code_div {
-    display: table;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
     box-sizing: border-box;
     margin: 0 auto;
 }
 
 #code {
-    display: table-cell;
+    height: 100px;
+    flex-grow: 1;
+    height: auto;
 }
 
 .copy_button {
-    display: table-cell;
-    padding: 0px 12px;
+    height: 24px;
+    padding: 12px 12px;
+    margin: 6px;
     color: white;  
     background-color: steelblue;
-    vertical-align: middle;
     border-radius: 12px;
+    text-align: center;
 }
 
 .convdata {

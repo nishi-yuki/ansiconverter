@@ -4,32 +4,40 @@
  */
 
 
-var input = document.getElementById("imgfile");
-var code_box = document.getElementById("code");
-var copy_button = document.getElementById("copy_button");
+const input = document.getElementById("imgfile");
+const code_box = document.getElementById("code");
+const copy_button = document.getElementById("copy_button");
+const main_form = document.getElementById("main_form");
+const dotsize_auto = document.getElementById("dotsize_auto");
+const dotsize_user = document.getElementById("dotsize_user");
 
-input.addEventListener("change", function (event) {
-    var file = event.target.files;
-    var reader = new FileReader();
-    var bigImg = document.getElementById("pixeldisplay");
+var auto_dotsize = "";
+var image_data = null;
+
+input.addEventListener("change", (event) => {
+    const file = event.target.files;
+    const reader = new FileReader();
+    const bigImg = document.getElementById("pixeldisplay");
+
+    syncResizeMode();
 
     reader.readAsDataURL(file[0]);
 
-    reader.onload = function () {
-        var dataUrl = reader.result;
-        var img = new Image();
+    reader.onload = () => {
+        const dataUrl = reader.result;
+        const img = new Image();
         img.src = dataUrl;
         bigImg.src = dataUrl;
 
-        img.onload = function () {
-            var canvas = document.getElementById("canvas");
-            var ctx = canvas.getContext("2d");
-            var canvas_size = 256;
-            var n = canvas_size / img.width;
+        img.onload = () => {
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            const canvas_size = 256;
+            const n = canvas_size / img.width;
             console.log(canvas_size + "/" + img.width + "=" + n);
 
-            var width = Math.ceil(img.width * n);
-            var height = Math.ceil(img.height * n);
+            const width = Math.ceil(img.width * n);
+            const height = Math.ceil(img.height * n);
             console.log("width:\t" + width);
             console.log("height:\t" + height);
 
@@ -40,38 +48,109 @@ input.addEventListener("change", function (event) {
             ctx.drawImage(img, 0, 0);
 
 
-            var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-            var colorModeForm = document.getElementById("color_mode");
-            var colorMode = colorModeForm.cmode.value;
-            console.log(colorMode)
+            auto_dotsize = guessPixelSize(image_data);
 
-            var ansi_code;
-            switch (colorMode) {
-                case "24bit":
-                    ansi_code = cov24bitansicode(data, "  ");
-                    break;
-                case "8bit":
-                    ansi_code = cov8bitansicode(data, "  ");
-                    break;
-            }
-
-            code_box.value = 'echo -e "' + ansi_code + '"\n';
+            document.getElementById("img_size").innerText = `${img.width}x${img.height} px`;
+            document.getElementById("guessed_dot_size").innerText = `${auto_dotsize} px`
+            main_form.px_size.value = auto_dotsize;
         }
     }
 }, false);
 
-copy_button.addEventListener("click", function (event) {
-    code_box.select();
-    document.execCommand("Copy");
+main_form.addEventListener("submit", (event) => {
+    if (!image_data) {
+        event.preventDefault();
+        return;
+    };
+
+    const dotsize = main_form.px_size.value;
+
+    const colorMode = main_form.cmode.value;
+    console.log(colorMode);
+
+    var ansi_code;
+    switch (colorMode) {
+        case "24bit":
+            ansi_code = cov24bitansicode(image_data, "  ", dotsize);
+            break;
+        case "8bit":
+            ansi_code = cov8bitansicode(image_data, "  ", dotsize);
+            break;
+    }
+
+    code_box.value = 'echo -e "' + ansi_code + '"\n';
+
+    event.preventDefault();
+});
+
+copy_button.addEventListener("click", (event) => {
+    navigator.clipboard.writeText(code_box.value);
+    message = document.getElementById("copy_ok_message");
+    message.style.opacity = 1;
+    setTimeout(() => { message.style.opacity = 0; }, 800)
 }, false)
 
-var cov24bitansicode = function (data, dotchar) {
+dotsize_auto.addEventListener("change", (event) =>
+    syncResizeMode()
+);
+
+dotsize_user.addEventListener("change", (event) =>
+    syncResizeMode()
+);
+
+const syncResizeMode = (event) => {
+    switch (main_form.resize_mode.value) {
+        case "auto":
+            main_form.px_size.readOnly = true;
+            main_form.px_size.value = auto_dotsize;
+            break;
+        case "user":
+            main_form.px_size.readOnly = false;
+            break;
+    }
+};
+
+const guessPixelSize = (data) => {
+    colors = data.data;
+    bc = -1;
+    pxsize = 1;
+    pxsizes = new Set();
+    console.log(colors.length / 4);
+    for (var i = 0; i < colors.length / 4; i++) {
+        ci = i * 4;
+        c = (colors[ci] * 0x10000) + (colors[ci + 1] * 0x100) + colors[ci + 2];
+        if (i % data.width == 0) {
+            pxsize = 1;
+            bc = c;
+            continue;
+        }
+
+        if (bc === c) {
+            pxsize++;
+        } else {
+            // console.log(`end at ${i} px ${pxsize} diff ${bc-c}`);
+            pxsizes.add(pxsize);
+            if (pxsize === 1) {
+                break;
+            }
+            pxsize = 1;
+        }
+        bc = c;
+    }
+    console.log(pxsizes);
+    return gcd_array(Array.from(pxsizes));
+}
+
+const cov24bitansicode = (data, dotchar, dotsize = 1) => {
+    const dot_size = Math.max(dotsize, 1);
+    const grid_offset = Math.floor(dot_size / 2);
     var ansi_code = "";
-    for (var y = 0; y < data.height; y++) {
+    for (var y = 0; y < data.height; y += dot_size) {
         var oldCode = null;
-        for (var x = 0; x < data.width; x++) {
-            var idx = (x + y * data.width) * 4;
+        for (var x = 0; x < data.width; x += dot_size) {
+            const idx = (grid_offset + x + y * data.width) * 4;
             var code;
             if (data.data[idx + 3] <= 16) {
                 code = "\\033[0m" + dotchar;
@@ -98,9 +177,9 @@ var cov24bitansicode = function (data, dotchar) {
     return ansi_code;
 }
 
-var cov8bitansicode = function (data, dotchar) {
+const cov8bitansicode = (data, dotchar, dotsize = 1) => {
 
-    var c256to6 = function (num) {
+    const c256to6 = (num) => {
         //console.log(num)
         br = [48, 115, 155, 195, 235, 255];
         for (let i = 0; i < br.length; i++) {
@@ -112,17 +191,18 @@ var cov8bitansicode = function (data, dotchar) {
         return 5;
     }
 
-    var div = 43;
+    const dot_size = Math.max(dotsize, 1);
+    const grid_offset = Math.floor(dot_size / 2);
     var ansi_code = "";
-    for (var y = 0; y < data.height; y++) {
+    for (var y = 0; y < data.height; y += dot_size) {
         var oldCode = null;
-        for (var x = 0; x < data.width; x++) {
-            var idx = (x + y * data.width) * 4;
+        for (var x = 0; x < data.width; x += dot_size) {
+            const idx = (grid_offset + x + y * data.width) * 4;
             var code;
             if (data.data[idx + 3] <= 16) {
                 code = "\\033[0m" + dotchar;
             } else {
-                var num = c256to6(data.data[idx]) * 36   //R
+                const num = c256to6(data.data[idx]) * 36   //R
                     + c256to6(data.data[idx + 1]) * 6    //G
                     + c256to6(data.data[idx + 2]) * 1    //B
                     + 16;
@@ -144,4 +224,15 @@ var cov8bitansicode = function (data, dotchar) {
         }
     }
     return ansi_code;
+}
+
+const gcd = (x, y) => {
+    if (y == 0) {
+        return x;
+    }
+    return gcd(y, x % y);
+}
+
+const gcd_array = (a) => {
+    return a.reduce((p, c) => gcd(p, c));
 }
