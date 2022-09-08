@@ -42,6 +42,11 @@ input.addEventListener("change", function (event) {
 
             var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
+            var pxsize = guessPixelSize(data);
+
+            document.getElementById("img_size").innerText = `${img.width}x${img.height} px`;
+            document.getElementById("px_size").innerText = `${pxsize}px`;
+
             var colorModeForm = document.getElementById("color_mode");
             var colorMode = colorModeForm.cmode.value;
             console.log(colorMode)
@@ -67,6 +72,37 @@ copy_button.addEventListener("click", function (event) {
     message.style.opacity = 1;
     setTimeout(function () { message.style.opacity = 0; }, 800)
 }, false)
+
+var guessPixelSize = (data) => {
+    colors = data.data;
+    bc = -1;
+    pxsize = 1;
+    pxsizes = new Set();
+    console.log(colors.length / 4);
+    for (var i = 0; i < colors.length / 4; i++) {
+        ci = i * 4;
+        c = (colors[ci] * 0x10000) + (colors[ci + 1] * 0x100) + colors[ci + 2];
+        if (i % data.width == 0) {
+            pxsize = 1;
+            bc = c;
+            continue;
+        }
+
+        if (bc === c) {
+            pxsize++;
+        } else {
+            // console.log(`end at ${i} px ${pxsize} diff ${bc-c}`);
+            pxsizes.add(pxsize);
+            if (pxsize === 1) {
+                break;
+            }
+            pxsize = 1;
+        }
+        bc = c;
+    }
+    console.log(pxsizes);
+    return gcd_array(Array.from(pxsizes));
+}
 
 var cov24bitansicode = function (data, dotchar) {
     var ansi_code = "";
@@ -146,4 +182,15 @@ var cov8bitansicode = function (data, dotchar) {
         }
     }
     return ansi_code;
+}
+
+var gcd = (x, y) => {
+    if (y == 0) {
+        return x;
+    }
+    return gcd(y, x % y);
+}
+
+var gcd_array = (a) => {
+    return a.reduce((p, c) => gcd(p, c));
 }
