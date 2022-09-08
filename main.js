@@ -12,6 +12,7 @@ var dotsize_auto = document.getElementById("dotsize_auto");
 var dotsize_user = document.getElementById("dotsize_user");
 
 var auto_dotsize;
+var image_data;
 
 input.addEventListener("change", function (event) {
     var file = event.target.files;
@@ -45,30 +46,35 @@ input.addEventListener("change", function (event) {
             ctx.drawImage(img, 0, 0);
 
 
-            var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-            auto_dotsize = guessPixelSize(data);
+            auto_dotsize = guessPixelSize(image_data);
 
             document.getElementById("img_size").innerText = `${img.width}x${img.height} px`;
             mainForm.px_size.value = auto_dotsize;
-
-            var colorMode = mainForm.cmode.value;
-            console.log(colorMode)
-
-            var ansi_code;
-            switch (colorMode) {
-                case "24bit":
-                    ansi_code = cov24bitansicode(data, "  ");
-                    break;
-                case "8bit":
-                    ansi_code = cov8bitansicode(data, "  ");
-                    break;
-            }
-
-            code_box.value = 'echo -e "' + ansi_code + '"\n';
         }
     }
 }, false);
+
+mainForm.addEventListener("submit", (event) => {
+
+    var colorMode = mainForm.cmode.value;
+    console.log(colorMode);
+
+    var ansi_code;
+    switch (colorMode) {
+        case "24bit":
+            ansi_code = cov24bitansicode(image_data, "  ");
+            break;
+        case "8bit":
+            ansi_code = cov8bitansicode(image_data, "  ");
+            break;
+    }
+
+    code_box.value = 'echo -e "' + ansi_code + '"\n';
+
+    event.preventDefault();
+});
 
 copy_button.addEventListener("click", function (event) {
     navigator.clipboard.writeText(code_box.value);

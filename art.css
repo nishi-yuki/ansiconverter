@@ -43,10 +43,12 @@ h1 {
     margin: 0;
 }
 
-.file_input {
+.button {
+    display: block;
     color: white;  
     background-color: steelblue;
     padding: 12px 24px;
+    margin: 12px 10%;
     border-radius: 12px;
 }
 
