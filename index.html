@@ -26,30 +26,28 @@
         </div>
         <br />
 
-        <label class="button">
-            画像ファイルを選択
-            <input type="file" accept="image/*" id="imgfile" style="display:none">
-        </label>
-        <br />
+        <table class="info_table">
+            <tr>
+                <th>画像サイズ</th>
+                <td id="img_size">-</td>
+            </tr>
+            <tr>
+                <th>ドットの大きさ</th>
+                <td id="guessed_dot_size">-</td>
+            </tr>
+        </table>
 
         <form id="main_form">
-            <table class="info_table">
-                <tr>
-                    <th>画像サイズ</th>
-                    <td id="img_size">-</td>
-                </tr>
-                <tr>
-                    <th>ドットの大きさ</th>
-                    <td>
-                        <input type="text" name="px_size" size="5" > px
-                    </td>
-                </tr>
-            </table>
+            <label class="button">
+                画像ファイルを選択
+                <input type="file" accept="image/*" id="imgfile" style="display:none">
+            </label>
             <div>
                 <label><input id="dotsize_auto" type="radio" name="resize_mode" value="auto" checked>自動認識</label>
 
                 <label><input id="dotsize_user" type="radio" name="resize_mode" value="auto">手動入力</label>
             </div>
+            <label>ドットの大きさ: <input type="text" name="px_size" size="5" readonly> px</label>
             <p>カラーモードを選択してください</p>
             <div>
                 <label><input type="radio" name="cmode" value="24bit" checked>24bitカラー</label>

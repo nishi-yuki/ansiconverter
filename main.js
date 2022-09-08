@@ -11,7 +11,7 @@ var mainForm = document.getElementById("main_form");
 var dotsize_auto = document.getElementById("dotsize_auto");
 var dotsize_user = document.getElementById("dotsize_user");
 
-var auto_dotsize;
+var auto_dotsize = "";
 var image_data;
 
 input.addEventListener("change", function (event) {
@@ -51,6 +51,7 @@ input.addEventListener("change", function (event) {
             auto_dotsize = guessPixelSize(image_data);
 
             document.getElementById("img_size").innerText = `${img.width}x${img.height} px`;
+            document.getElementById("guessed_dot_size").innerText = `${auto_dotsize} px`
             mainForm.px_size.value = auto_dotsize;
         }
     }
