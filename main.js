@@ -144,12 +144,12 @@ var guessPixelSize = (data) => {
 }
 
 var cov24bitansicode = (data, dotchar, dotsize = 1) => {
-    const grid_offset = Math.floor(dotsize / 2);
-    var dotsize = Math.max(dotsize, 1);
+    const dot_size = Math.max(dotsize, 1);
+    const grid_offset = Math.floor(dot_size / 2);
     var ansi_code = "";
-    for (var y = 0; y < data.height; y += dotsize) {
+    for (var y = 0; y < data.height; y += dot_size) {
         var oldCode = null;
-        for (var x = 0; x < data.width; x += dotsize) {
+        for (var x = 0; x < data.width; x += dot_size) {
             var idx = (grid_offset + x + y * data.width) * 4;
             var code;
             if (data.data[idx + 3] <= 16) {
@@ -191,12 +191,12 @@ var cov8bitansicode = (data, dotchar, dotsize = 1) => {
         return 5;
     }
 
-    const grid_offset = Math.floor(dotsize / 2);
-    var dotsize = Math.max(dotsize, 1);
+    const dot_size = Math.max(dotsize, 1);
+    const grid_offset = Math.floor(dot_size / 2);
     var ansi_code = "";
-    for (var y = 0; y < data.height; y += dotsize) {
+    for (var y = 0; y < data.height; y += dot_size) {
         var oldCode = null;
-        for (var x = 0; x < data.width; x += dotsize) {
+        for (var x = 0; x < data.width; x += dot_size) {
             var idx = (grid_offset + x + y * data.width) * 4;
             var code;
             if (data.data[idx + 3] <= 16) {
