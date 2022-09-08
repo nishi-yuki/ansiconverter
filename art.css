@@ -50,6 +50,16 @@ h1 {
     border-radius: 12px;
 }
 
+.info_table {
+    width: 80%;
+    margin: 24px 10%;
+}
+
+.info_table th {
+    width: 40%;
+    text-align: start;
+}
+
 #copy_ok_message {
     opacity: 0;
     font-weight: bold;

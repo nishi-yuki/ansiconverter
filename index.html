@@ -24,7 +24,18 @@
         </div>
         <br />
 
+        <label class="file_input">
+            画像ファイルを選択
+            <input type="file" accept="image/*" id="imgfile" style="display:none">
+        </label>
+        <br />
+
         <form id="color_mode">
+            <table class="info_table">
+                <tr><th>画像サイズ</th><td>20x20</td></tr>
+                <tr><th>認識ピクセルサイズ</th><td>1x1</td></tr>
+            </table>
+            <label><input type="checkbox" name="aut_resize">自動リサイズ</label>
             <p>カラーモードを選択してください</p>
             <div>
                 <label><input type="radio" name="cmode" value="24bit" checked>24bitカラー</label>
@@ -35,11 +46,6 @@
 
         <br />
 
-        <label class="file_input">
-            画像ファイルを選択
-            <input type="file" accept="image/*" id="imgfile" style="display:none">
-        </label>
-        <br />
         <canvas class="convdata" id="canvas"></canvas>
         <br />
         <span id="copy_ok_message">コピーしました！</span>
