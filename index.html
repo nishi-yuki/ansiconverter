@@ -15,7 +15,9 @@
             <p>せつめい</p>
             <ul>
                 <li>画像ファイルからターミナルでドット絵を表示するシェルスクリプトを生成します</li>
-                <li>画像ファイルは1ドット1ピクセルのものを使用してください</li>
+                <li>１ドットをスペース二つで表現します</li>
+                <li>ドットの大きさは自動で認識しますが、正しくない場合は手動入力してください</li>
+                <li>画像にノイズがあるとドットの大きさを自動認識できません</li>
                 <li>ターミナルは24bitカラーに対応したものを使用してください</li>
             </ul>
         </div>
@@ -30,12 +32,24 @@
         </label>
         <br />
 
-        <form id="color_mode">
+        <form id="main_form">
             <table class="info_table">
-                <tr><th>画像サイズ</th><td id="img_size">-</td></tr>
-                <tr><th>認識ピクセルサイズ</th><td id="px_size">-</td></tr>
+                <tr>
+                    <th>画像サイズ</th>
+                    <td id="img_size">-</td>
+                </tr>
+                <tr>
+                    <th>ドットの大きさ</th>
+                    <td>
+                        <input type="text" name="px_size" size="5" > px
+                    </td>
+                </tr>
             </table>
-            <label><input type="checkbox" name="aut_resize">自動リサイズ</label>
+            <div>
+                <label><input id="dotsize_auto" type="radio" name="resize_mode" value="auto" checked>自動認識</label>
+
+                <label><input id="dotsize_user" type="radio" name="resize_mode" value="auto">手動入力</label>
+            </div>
             <p>カラーモードを選択してください</p>
             <div>
                 <label><input type="radio" name="cmode" value="24bit" checked>24bitカラー</label>

@@ -7,6 +7,11 @@
 var input = document.getElementById("imgfile");
 var code_box = document.getElementById("code");
 var copy_button = document.getElementById("copy_button");
+var mainForm = document.getElementById("main_form");
+var dotsize_auto = document.getElementById("dotsize_auto");
+var dotsize_user = document.getElementById("dotsize_user");
+
+var auto_dotsize;
 
 input.addEventListener("change", function (event) {
     var file = event.target.files;
@@ -42,13 +47,12 @@ input.addEventListener("change", function (event) {
 
             var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-            var pxsize = guessPixelSize(data);
+            auto_dotsize = guessPixelSize(data);
 
             document.getElementById("img_size").innerText = `${img.width}x${img.height} px`;
-            document.getElementById("px_size").innerText = `${pxsize}px`;
+            mainForm.px_size.value = auto_dotsize;
 
-            var colorModeForm = document.getElementById("color_mode");
-            var colorMode = colorModeForm.cmode.value;
+            var colorMode = mainForm.cmode.value;
             console.log(colorMode)
 
             var ansi_code;
@@ -72,6 +76,15 @@ copy_button.addEventListener("click", function (event) {
     message.style.opacity = 1;
     setTimeout(function () { message.style.opacity = 0; }, 800)
 }, false)
+
+dotsize_auto.addEventListener("change", (event) => {
+    mainForm.px_size.readOnly = true;
+    mainForm.px_size.value = auto_dotsize;
+});
+
+dotsize_user.addEventListener("change", (event) => {
+    mainForm.px_size.readOnly = false;
+});
 
 var guessPixelSize = (data) => {
     colors = data.data;
