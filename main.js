@@ -7,7 +7,7 @@
 var input = document.getElementById("imgfile");
 var code_box = document.getElementById("code");
 var copy_button = document.getElementById("copy_button");
-var mainForm = document.getElementById("main_form");
+var main_form = document.getElementById("main_form");
 var dotsize_auto = document.getElementById("dotsize_auto");
 var dotsize_user = document.getElementById("dotsize_user");
 
@@ -54,20 +54,20 @@ input.addEventListener("change", function (event) {
 
             document.getElementById("img_size").innerText = `${img.width}x${img.height} px`;
             document.getElementById("guessed_dot_size").innerText = `${auto_dotsize} px`
-            mainForm.px_size.value = auto_dotsize;
+            main_form.px_size.value = auto_dotsize;
         }
     }
 }, false);
 
-mainForm.addEventListener("submit", (event) => {
+main_form.addEventListener("submit", (event) => {
     if (!image_data) {
         event.preventDefault();
         return;
     };
 
-    const dotsize = mainForm.px_size.value;
+    const dotsize = main_form.px_size.value;
 
-    var colorMode = mainForm.cmode.value;
+    var colorMode = main_form.cmode.value;
     console.log(colorMode);
 
     var ansi_code;
@@ -101,13 +101,13 @@ dotsize_user.addEventListener("change", (event) =>
 );
 
 const syncResizeMode = (event) => {
-    switch (mainForm.resize_mode.value) {
+    switch (main_form.resize_mode.value) {
         case "auto":
-            mainForm.px_size.readOnly = true;
-            mainForm.px_size.value = auto_dotsize;
+            main_form.px_size.readOnly = true;
+            main_form.px_size.value = auto_dotsize;
             break;
         case "user":
-            mainForm.px_size.readOnly = false;
+            main_form.px_size.readOnly = false;
             break;
     }
 };
