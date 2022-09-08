@@ -15,29 +15,29 @@ var auto_dotsize = "";
 var image_data = null;
 
 input.addEventListener("change", (event) => {
-    var file = event.target.files;
-    var reader = new FileReader();
-    var bigImg = document.getElementById("pixeldisplay");
+    const file = event.target.files;
+    const reader = new FileReader();
+    const bigImg = document.getElementById("pixeldisplay");
 
     syncResizeMode();
 
     reader.readAsDataURL(file[0]);
 
     reader.onload = () => {
-        var dataUrl = reader.result;
-        var img = new Image();
+        const dataUrl = reader.result;
+        const img = new Image();
         img.src = dataUrl;
         bigImg.src = dataUrl;
 
         img.onload = () => {
-            var canvas = document.getElementById("canvas");
-            var ctx = canvas.getContext("2d");
-            var canvas_size = 256;
-            var n = canvas_size / img.width;
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            const canvas_size = 256;
+            const n = canvas_size / img.width;
             console.log(canvas_size + "/" + img.width + "=" + n);
 
-            var width = Math.ceil(img.width * n);
-            var height = Math.ceil(img.height * n);
+            const width = Math.ceil(img.width * n);
+            const height = Math.ceil(img.height * n);
             console.log("width:\t" + width);
             console.log("height:\t" + height);
 
@@ -67,7 +67,7 @@ main_form.addEventListener("submit", (event) => {
 
     const dotsize = main_form.px_size.value;
 
-    var colorMode = main_form.cmode.value;
+    const colorMode = main_form.cmode.value;
     console.log(colorMode);
 
     var ansi_code;
@@ -150,7 +150,7 @@ const cov24bitansicode = (data, dotchar, dotsize = 1) => {
     for (var y = 0; y < data.height; y += dot_size) {
         var oldCode = null;
         for (var x = 0; x < data.width; x += dot_size) {
-            var idx = (grid_offset + x + y * data.width) * 4;
+            const idx = (grid_offset + x + y * data.width) * 4;
             var code;
             if (data.data[idx + 3] <= 16) {
                 code = "\\033[0m" + dotchar;
@@ -197,12 +197,12 @@ const cov8bitansicode = (data, dotchar, dotsize = 1) => {
     for (var y = 0; y < data.height; y += dot_size) {
         var oldCode = null;
         for (var x = 0; x < data.width; x += dot_size) {
-            var idx = (grid_offset + x + y * data.width) * 4;
+            const idx = (grid_offset + x + y * data.width) * 4;
             var code;
             if (data.data[idx + 3] <= 16) {
                 code = "\\033[0m" + dotchar;
             } else {
-                var num = c256to6(data.data[idx]) * 36   //R
+                const num = c256to6(data.data[idx]) * 36   //R
                     + c256to6(data.data[idx + 1]) * 6    //G
                     + c256to6(data.data[idx + 2]) * 1    //B
                     + 16;
