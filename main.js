@@ -14,7 +14,7 @@ var dotsize_user = document.getElementById("dotsize_user");
 var auto_dotsize = "";
 var image_data = null;
 
-input.addEventListener("change", function (event) {
+input.addEventListener("change", (event) => {
     var file = event.target.files;
     var reader = new FileReader();
     var bigImg = document.getElementById("pixeldisplay");
@@ -23,13 +23,13 @@ input.addEventListener("change", function (event) {
 
     reader.readAsDataURL(file[0]);
 
-    reader.onload = function () {
+    reader.onload = () => {
         var dataUrl = reader.result;
         var img = new Image();
         img.src = dataUrl;
         bigImg.src = dataUrl;
 
-        img.onload = function () {
+        img.onload = () => {
             var canvas = document.getElementById("canvas");
             var ctx = canvas.getContext("2d");
             var canvas_size = 256;
@@ -85,11 +85,11 @@ main_form.addEventListener("submit", (event) => {
     event.preventDefault();
 });
 
-copy_button.addEventListener("click", function (event) {
+copy_button.addEventListener("click", (event) => {
     navigator.clipboard.writeText(code_box.value);
     message = document.getElementById("copy_ok_message");
     message.style.opacity = 1;
-    setTimeout(function () { message.style.opacity = 0; }, 800)
+    setTimeout(() => { message.style.opacity = 0; }, 800)
 }, false)
 
 dotsize_auto.addEventListener("change", (event) =>
@@ -143,7 +143,7 @@ var guessPixelSize = (data) => {
     return gcd_array(Array.from(pxsizes));
 }
 
-var cov24bitansicode = function (data, dotchar, dotsize = 1) {
+var cov24bitansicode = (data, dotchar, dotsize = 1) => {
     const grid_offset = Math.floor(dotsize / 2);
     var dotsize = Math.max(dotsize, 1);
     var ansi_code = "";
@@ -177,9 +177,9 @@ var cov24bitansicode = function (data, dotchar, dotsize = 1) {
     return ansi_code;
 }
 
-var cov8bitansicode = function (data, dotchar, dotsize = 1) {
+var cov8bitansicode = (data, dotchar, dotsize = 1) => {
 
-    var c256to6 = function (num) {
+    var c256to6 = (num) => {
         //console.log(num)
         br = [48, 115, 155, 195, 235, 255];
         for (let i = 0; i < br.length; i++) {
