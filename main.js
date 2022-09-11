@@ -153,10 +153,11 @@ const guessDotSize = (data) => {
     };
 
     a = new Set();
+
     count = 1;
     for (var x = 1; x < data.width; x++) {
         same = true;
-        for (var y = 0; y < data.height; y+=2) {
+        for (var y = 0; y < data.height; y += 2) {
             if (!cmp_clr(x - 1, y, x, y)) {
                 same = false;
                 break;
@@ -171,6 +172,26 @@ const guessDotSize = (data) => {
     }
     a.add(count);
     console.log(a);
+
+    count = 1;
+    for (var y = 1; y < data.width; y++) {
+        same = true;
+        for (var x = 0; x < data.height; x += 2) {
+            if (!cmp_clr(x, y - 1, x, y)) {
+                same = false;
+                break;
+            }
+        }
+        if (same) {
+            count++;
+        } else {
+            a.add(count);
+            count = 1;
+        }
+    }
+    a.add(count);
+    console.log(a);
+
     return gcd_array(Array.from(a));
 };
 
