@@ -112,37 +112,6 @@ const syncResizeMode = (event) => {
     }
 };
 
-const guessPixelSize = (data) => {
-    colors = data.data;
-    bc = -1;
-    pxsize = 1;
-    pxsizes = new Set();
-    console.log(colors.length / 4);
-    for (var i = 0; i < colors.length / 4; i++) {
-        ci = i * 4;
-        c = (colors[ci] * 0x10000) + (colors[ci + 1] * 0x100) + colors[ci + 2];
-        if (i % data.width == 0) {
-            pxsize = 1;
-            bc = c;
-            continue;
-        }
-
-        if (bc === c) {
-            pxsize++;
-        } else {
-            // console.log(`end at ${i} px ${pxsize} diff ${bc-c}`);
-            pxsizes.add(pxsize);
-            if (pxsize === 1) {
-                break;
-            }
-            pxsize = 1;
-        }
-        bc = c;
-    }
-    console.log(pxsizes);
-    return gcd_array(Array.from(pxsizes));
-}
-
 const guessDotSize = (data) => {
     cmp_clr = (x1, y1, x2, y2) => {
         i1 = (x1 + y1 * data.width) * 4;
