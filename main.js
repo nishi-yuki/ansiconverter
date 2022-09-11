@@ -156,7 +156,7 @@ const guessDotSize = (data) => {
     count = 1;
     for (var x = 1; x < data.width; x++) {
         same = true;
-        for (var y = 0; y < data.width; y+=2) {
+        for (var y = 0; y < data.height; y+=2) {
             if (!cmp_clr(x - 1, y, x, y)) {
                 same = false;
                 break;
