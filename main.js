@@ -169,6 +169,7 @@ const guessDotSize = (data) => {
             count = 1;
         }
     }
+    a.add(count);
     console.log(a);
     return gcd_array(Array.from(a));
 };
