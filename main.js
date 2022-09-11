@@ -50,7 +50,7 @@ input.addEventListener("change", (event) => {
 
             image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-            auto_dotsize = guessPixelSize(image_data);
+            auto_dotsize = guessDotSize(image_data);
 
             document.getElementById("img_size").innerText = `${img.width}x${img.height} px`;
             document.getElementById("guessed_dot_size").innerText = `${auto_dotsize} px`
@@ -142,6 +142,36 @@ const guessPixelSize = (data) => {
     console.log(pxsizes);
     return gcd_array(Array.from(pxsizes));
 }
+
+const guessDotSize = (data) => {
+    cmp_clr = (x1, y1, x2, y2) => {
+        i1 = (x1 + y1 * data.width) * 4;
+        i2 = (x2 + y2 * data.width) * 4;
+        return data.data[i1] == data.data[i2] &&
+            data.data[i1 + 1] == data.data[i2 + 1] &&
+            data.data[i1 + 2] == data.data[i2 + 2];
+    };
+
+    a = new Set();
+    count = 1;
+    for (var x = 1; x < data.width; x++) {
+        same = true;
+        for (var y = 0; y < data.width; y+=2) {
+            if (!cmp_clr(x - 1, y, x, y)) {
+                same = false;
+                break;
+            }
+        }
+        if (same) {
+            count++;
+        } else {
+            a.add(count);
+            count = 1;
+        }
+    }
+    console.log(a);
+    return gcd_array(Array.from(a));
+};
 
 const cov24bitansicode = (data, dotchar, dotsize = 1) => {
     const dot_size = Math.max(dotsize, 1);
