@@ -50,7 +50,7 @@ input.addEventListener("change", (event) => {
 
             image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-            auto_dotsize = guessPixelSize(image_data);
+            auto_dotsize = guessDotSize(image_data);
 
             document.getElementById("img_size").innerText = `${img.width}x${img.height} px`;
             document.getElementById("guessed_dot_size").innerText = `${auto_dotsize} px`
@@ -112,36 +112,57 @@ const syncResizeMode = (event) => {
     }
 };
 
-const guessPixelSize = (data) => {
-    colors = data.data;
-    bc = -1;
-    pxsize = 1;
-    pxsizes = new Set();
-    console.log(colors.length / 4);
-    for (var i = 0; i < colors.length / 4; i++) {
-        ci = i * 4;
-        c = (colors[ci] * 0x10000) + (colors[ci + 1] * 0x100) + colors[ci + 2];
-        if (i % data.width == 0) {
-            pxsize = 1;
-            bc = c;
-            continue;
-        }
+const guessDotSize = (data) => {
+    cmp_clr = (x1, y1, x2, y2) => {
+        i1 = (x1 + y1 * data.width) * 4;
+        i2 = (x2 + y2 * data.width) * 4;
+        return data.data[i1] == data.data[i2] &&
+            data.data[i1 + 1] == data.data[i2 + 1] &&
+            data.data[i1 + 2] == data.data[i2 + 2];
+    };
 
-        if (bc === c) {
-            pxsize++;
-        } else {
-            // console.log(`end at ${i} px ${pxsize} diff ${bc-c}`);
-            pxsizes.add(pxsize);
-            if (pxsize === 1) {
+    a = new Set();
+
+    count = 1;
+    for (var x = 1; x < data.width; x++) {
+        same = true;
+        for (var y = 0; y < data.height; y += 2) {
+            if (!cmp_clr(x - 1, y, x, y)) {
+                same = false;
                 break;
             }
-            pxsize = 1;
         }
-        bc = c;
+        if (same) {
+            count++;
+        } else {
+            a.add(count);
+            count = 1;
+        }
     }
-    console.log(pxsizes);
-    return gcd_array(Array.from(pxsizes));
-}
+    a.add(count);
+    console.log(a);
+
+    count = 1;
+    for (var y = 1; y < data.width; y++) {
+        same = true;
+        for (var x = 0; x < data.height; x += 2) {
+            if (!cmp_clr(x, y - 1, x, y)) {
+                same = false;
+                break;
+            }
+        }
+        if (same) {
+            count++;
+        } else {
+            a.add(count);
+            count = 1;
+        }
+    }
+    a.add(count);
+    console.log(a);
+
+    return gcd_array(Array.from(a));
+};
 
 const cov24bitansicode = (data, dotchar, dotsize = 1) => {
     const dot_size = Math.max(dotsize, 1);
